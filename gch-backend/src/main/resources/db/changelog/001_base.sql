@@ -6,7 +6,7 @@ CREATE TABLE universe (
   slug        VARCHAR(120) NOT NULL,
   created_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
-CREATE UNIQUE INDEX ux_universe_slug ON universe(slug);
+CREATE UNIQUE INDEX IF NOT EXISTS ux_universe_slug ON universe(slug);
 
 CREATE TABLE card_set (
   id           UUID PRIMARY KEY,
@@ -15,8 +15,8 @@ CREATE TABLE card_set (
   release_date DATE,
   universe_id  UUID         NOT NULL REFERENCES universe(id)
 );
-CREATE INDEX ix_card_set_universe ON card_set(universe_id);
-CREATE UNIQUE INDEX ux_card_set_code ON card_set(code);
+CREATE INDEX IF NOT EXISTS ix_card_set_universe ON card_set(universe_id);
+CREATE UNIQUE INDEX IF NOT EXISTS ux_card_set_code ON card_set(code);
 
 CREATE TABLE card (
   id           UUID PRIMARY KEY,
@@ -28,10 +28,10 @@ CREATE TABLE card (
   attributes   JSONB        NOT NULL DEFAULT '{}'::jsonb,
   created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
-CREATE INDEX ix_card_set_universe ON card(set_id, universe_id);
-CREATE INDEX ix_card_name_trgm ON card USING GIN (name gin_trgm_ops);
-CREATE INDEX ix_card_attr_gin ON card USING GIN (attributes);
-CREATE INDEX ix_card_attr_power ON card (((attributes->>'power')));
+CREATE INDEX IF NOT EXISTS ix_card_universe ON card(set_id, universe_id);
+CREATE INDEX IF NOT EXISTS ix_card_name_trgm ON card USING GIN (name gin_trgm_ops);
+CREATE INDEX IF NOT EXISTS ix_card_attr_gin ON card USING GIN (attributes);
+CREATE INDEX IF NOT EXISTS ix_card_attr_power ON card (((attributes->>'power')));
 
 CREATE TABLE tag (
   id   UUID PRIMARY KEY,
@@ -64,7 +64,7 @@ CREATE TABLE owned_card (
   CONSTRAINT ux_owned UNIQUE (user_id, card_id),
   CONSTRAINT chk_owned_qty CHECK (qty >= 0)
 );
-CREATE INDEX ix_owned_user ON owned_card(user_id);
+CREATE INDEX IF NOT EXISTS ix_owned_user ON owned_card(user_id);
 
 CREATE TABLE deck (
   id         UUID PRIMARY KEY,
