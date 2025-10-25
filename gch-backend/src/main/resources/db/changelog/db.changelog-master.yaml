@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 000-ext
+      author: you
+      changes:
+        - sql:
+            splitStatements: false
+            sql: |
+              CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+  - include:
+      file: db/changelog/001_base.sql
