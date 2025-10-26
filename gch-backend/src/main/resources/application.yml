@@ -26,3 +26,14 @@ logging:
   level:
     root: INFO
     org.springframework.security: INFO
+
+gch:
+  jwt:
+    secret: ${GCH_JWT_SECRET:change-me-change-me-change-me-change-me-32-bytes-min}
+    expirationMinutes: 120
+
+springdoc:
+  api-docs.enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
